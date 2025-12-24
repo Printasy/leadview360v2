@@ -1,0 +1,37 @@
+@import "tailwindcss";
+
+@theme {
+    /* Fonts */
+    --font-sans: 'Inter', ui-sans-serif, system-ui, sans-serif;
+
+    /* Custom Colors: Tailwind v4 maakt hier automatisch classes van (bv. bg-brand-500) */
+    --color-brand-50: #f1f5f9;
+    --color-brand-100: #e2e8f0;
+    --color-brand-200: #cbd5e1;
+    --color-brand-300: #94a3b8;
+    --color-brand-400: #64748b;
+    --color-brand-500: #475569;
+    --color-brand-600: #334155;
+    --color-brand-700: #1e293b;
+    --color-brand-800: #0f172a;
+    --color-brand-900: #020617;
+    --color-brand-950: #020617;
+
+    --color-accent-500: #0d9488;
+    --color-accent-600: #0f766e;
+}
+
+/* Global Styles */
+body {
+    @apply antialiased bg-slate-50 text-slate-700;
+}
+
+/* Dark mode support (v4 detecteert class="dark" op html) */
+:root.dark body {
+    @apply bg-brand-950 text-slate-300;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-thumb { @apply bg-brand-200 rounded-full border-2 border-transparent bg-clip-content dark:bg-brand-600; }
+::-webkit-scrollbar-track { background-color: transparent; }

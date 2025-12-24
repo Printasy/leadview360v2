@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="nl" class="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Automation Builder - Final</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: { 900: '#1e293b', 950: '#0f172a' }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+
+    <style>
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
+        .dark ::-webkit-scrollbar-thumb { background: #475569; }
+        .flow-line {
+            background-image: linear-gradient(90deg, #cbd5e1 50%, transparent 50%);
+            background-size: 20px 100%;
+            animation: dash 30s linear infinite;
+        }
+        .dark .flow-line { background-image: linear-gradient(90deg, #475569 50%, transparent 50%); }
+        @keyframes dash { to { background-position: -1000px 0; } }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 dark:bg-brand-950 dark:text-slate-200 h-screen overflow-hidden">
+
+<div id="app" class="h-full flex flex-col w-full relative">
+
+    <div class="h-14 bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-700 flex items-center justify-between px-6 z-20 shrink-0 shadow-sm">
+        <div class="flex items-center gap-4">
+            <button @click="handleBack" class="text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200 text-sm font-medium flex items-center gap-1">
+                <i class="ph ph-arrow-left"></i> Terug
+            </button>
+            <div class="h-6 w-px bg-slate-200 dark:bg-slate-700"></div>
+            <h1 class="font-bold text-slate-700 dark:text-slate-200 flex items-center gap-2">
+                <i class="ph ph-robot text-teal-500 text-xl"></i> Automation Builder
+            </h1>
+        </div>
+
+        <div class="flex gap-3 items-center">
+            <div class="flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold border transition-colors"
+                 :class="isActive ? 'bg-green-50 text-green-700 border-green-200 dark:bg-green-900/20 dark:border-green-800' : 'bg-slate-100 text-slate-500 border-slate-200 dark:bg-slate-800 dark:border-slate-600'">
+                <span class="w-2 h-2 rounded-full" :class="isActive ? 'bg-green-500 animate-pulse' : 'bg-slate-400'"></span>
+                {{ isActive ? 'LIVE' : 'GEPAUZEERD' }}
+            </div>
+
+            <button @click="toggleDark" class="text-slate-400 hover:text-teal-500 ml-2">
+                <i v-if="isDark" class="ph ph-sun text-xl"></i>
+                <i v-else class="ph ph-moon text-xl"></i>
+            </button>
+
+            <button @click="handleSave" class="bg-teal-500 hover:bg-teal-600 text-white px-4 py-1.5 rounded text-sm font-medium shadow-sm transition-colors flex items-center gap-2 ml-2">
+                <i class="ph ph-floppy-disk"></i> Opslaan
+            </button>
+        </div>
+    </div>
+
+    <div class="flex-1 overflow-hidden flex flex-col md:flex-row relative">
+
+        <div class="w-full md:w-1/2 flex flex-col border-r border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/50 relative">
+            <div class="p-4 border-b border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 flex justify-between items-center z-10">
+                <div>
+                    <h2 class="font-bold text-slate-700 dark:text-slate-200 flex items-center gap-2">
+                        <span class="bg-blue-100 text-blue-700 px-2 py-0.5 rounded text-xs font-black">WHEN</span>
+                        Trigger Criteria
+                    </h2>
+                </div>
+                <div class="flex bg-slate-100 dark:bg-slate-800 p-1 rounded-lg">
+                    <button @click="targetType = 'contacts'" :class="targetType === 'contacts' ? 'bg-white dark:bg-slate-700 text-blue-600 shadow-sm' : 'text-slate-400'" class="px-2 py-1 text-xs font-bold rounded">Contacten</button>
+                    <button @click="targetType = 'companies'" :class="targetType === 'companies' ? 'bg-white dark:bg-slate-700 text-blue-600 shadow-sm' : 'text-slate-400'" class="px-2 py-1 text-xs font-bold rounded">Bedrijven</button>
+                </div>
+            </div>
+
+            <div class="flex-1 overflow-y-auto p-6 space-y-5">
+
+                <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg p-5 shadow-sm space-y-5">
+
+                    <div class="flex items-center justify-between bg-slate-50 dark:bg-slate-800/50 p-3 rounded-lg border border-slate-100 dark:border-slate-700">
+                        <div>
+                            <span class="text-xs font-bold uppercase block" :class="isActive ? 'text-green-600' : 'text-slate-500'">Status Automatie</span>
+                            <span class="text-[10px] text-slate-400">{{ isActive ? 'Automatie voert acties uit.' : 'Geen acties worden uitgevoerd.' }}</span>
+                        </div>
+                        <label class="relative inline-flex items-center cursor-pointer">
+                            <input type="checkbox" v-model="isActive" class="sr-only peer">
+                            <div class="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer dark:bg-slate-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-green-500"></div>
+                        </label>
+                    </div>
+
+                    <div>
+                        <label class="text-xs font-bold uppercase text-slate-500 mb-1 block">Naam</label>
+                        <input type="text" v-model="automationName" placeholder="bv. New Lead Nurturing Campaign" class="w-full p-2 border border-slate-300 dark:border-slate-600 rounded bg-white dark:bg-slate-950 dark:text-white focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                    </div>
+
+                    <div class="pt-2 border-t border-slate-100 dark:border-slate-800">
+                        <div class="flex items-center justify-between mb-2">
+                            <label class="text-xs font-bold uppercase text-slate-500 flex items-center gap-2">
+                                <i class="ph ph-calendar-check"></i> Beperkte Looptijd?
+                            </label>
+                            <label class="relative inline-flex items-center cursor-pointer">
+                                <input type="checkbox" v-model="hasSchedule" class="sr-only peer">
+                                <div class="w-9 h-5 bg-slate-200 peer-focus:outline-none rounded-full peer dark:bg-slate-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-blue-500"></div>
+                            </label>
+                        </div>
+
+                        <div v-if="!hasSchedule" class="text-xs text-slate-400 italic">
+                            Draait continu zolang status op 'Actief' staat.
+                        </div>
+
+                        <div v-if="hasSchedule" class="grid grid-cols-2 gap-3 mt-3 animate-fade bg-blue-50 dark:bg-blue-900/10 p-3 rounded border border-blue-100 dark:border-blue-900/20">
+                            <div>
+                                <label class="text-[10px] uppercase font-bold text-blue-800 dark:text-blue-400 block mb-1">Start Datum</label>
+                                <input type="datetime-local" v-model="scheduleStart" class="w-full p-2 text-xs border border-blue-200 dark:border-blue-800 rounded bg-white dark:bg-slate-950 dark:text-white">
+                            </div>
+                            <div>
+                                <label class="text-[10px] uppercase font-bold text-blue-800 dark:text-blue-400 block mb-1">Eind Datum</label>
+                                <input type="datetime-local" v-model="scheduleEnd" class="w-full p-2 text-xs border border-blue-200 dark:border-blue-800 rounded bg-white dark:bg-slate-950 dark:text-white">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <hr class="border-slate-200 dark:border-slate-700">
+
+                <div>
+                    <h3 class="text-xs font-bold uppercase text-slate-500 mb-3 pl-1">Triggers (Filters)</h3>
+
+                    <div v-if="activeRules.length === 0" class="flex flex-col items-center justify-center py-8 border-2 border-dashed border-slate-300 dark:border-slate-700 rounded-xl bg-slate-50/50">
+                        <p class="text-xs text-slate-400">Sleep filters hierheen of klik op toevoegen.</p>
+                    </div>
+
+                    <div class="space-y-3">
+                        <div v-for="(rule, index) in activeRules" :key="rule.uniqueId" class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg shadow-sm relative group">
+                            <div class="flex justify-between items-center p-2 border-b border-slate-100 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/50 rounded-t-lg">
+                                <span class="text-xs font-bold text-blue-600">{{ rule.category }} &bull; {{ rule.label }}</span>
+                                <button @click="removeRule(index)" class="text-slate-400 hover:text-red-500"><i class="ph ph-x"></i></button>
+                            </div>
+                            <div class="p-3 text-sm">
+                                <div v-if="rule.inputType === 'multi-text'">
+                                    <input v-model="rule.value" class="w-full p-1.5 text-xs border rounded dark:bg-slate-950 dark:border-slate-600" placeholder="Waarde...">
+                                </div>
+                                <div v-if="rule.inputType === 'timeframe'" class="flex gap-2">
+                                    <input type="number" v-model="rule.days" class="w-16 p-1.5 text-xs border rounded dark:bg-slate-950 dark:border-slate-600" placeholder="0">
+                                    <span class="self-center text-xs text-slate-500">dagen geleden</span>
+                                </div>
+                                <div v-if="rule.inputType === 'status-select'">
+                                    <select v-model="rule.status" class="w-full p-1.5 text-xs border rounded dark:bg-slate-950 dark:border-slate-600"><option>Pending</option><option>Paid</option></select>
+                                </div>
+                                <div v-if="!['multi-text','timeframe','status-select'].includes(rule.inputType)" class="text-xs text-slate-400 italic">
+                                    Uitgebreide configuratie...
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="relative group mt-4">
+                        <button @click="showTriggerMenu = !showTriggerMenu" class="w-full py-2 border-2 border-dashed border-blue-300 dark:border-blue-800 text-blue-600 dark:text-blue-400 font-bold rounded-lg hover:bg-blue-50 dark:hover:bg-blue-900/20 transition flex justify-center items-center gap-2 text-xs uppercase tracking-wide">
+                            <i class="ph ph-plus"></i> Conditie Toevoegen
+                        </button>
+                        <div v-if="showTriggerMenu" class="absolute top-full left-0 w-full mt-2 bg-white dark:bg-slate-800 border shadow-xl rounded-lg z-50 max-h-60 overflow-y-auto">
+                            <div v-for="(rules, category) in groupedRules" :key="category" class="p-2">
+                                <h4 class="text-[10px] font-bold uppercase text-slate-400 pl-2">{{ category }}</h4>
+                                <button v-for="r in rules" @click="addRule(r)" class="w-full text-left text-xs p-2 hover:bg-blue-50 dark:hover:bg-slate-700 rounded text-slate-600 dark:text-slate-300">
+                                    {{ r.label }}
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="hidden md:block absolute top-1/2 right-0 transform translate-x-1/2 -translate-y-1/2 z-20 bg-white dark:bg-slate-800 p-2 rounded-full border border-slate-200 dark:border-slate-700 shadow-sm text-slate-400">
+                <i class="ph ph-arrow-right text-xl"></i>
+            </div>
+        </div>
+
+        <div class="w-full md:w-1/2 flex flex-col bg-slate-50 dark:bg-brand-950 relative">
+            <div class="p-4 border-b border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 z-10">
+                <h2 class="font-bold text-slate-700 dark:text-slate-200 flex items-center gap-2">
+                    <span class="bg-teal-100 text-teal-700 px-2 py-0.5 rounded text-xs font-black">THEN</span>
+                    Perform Actions
+                </h2>
+            </div>
+
+            <div class="flex-1 overflow-y-auto p-6 space-y-6">
+                <div v-if="actions.length > 0" class="absolute left-10 top-20 bottom-20 w-0.5 flow-line z-0 opacity-50"></div>
+
+                <div v-if="actions.length === 0" class="flex flex-col items-center justify-center py-16 opacity-50">
+                    <i class="ph ph-lightning text-4xl text-slate-300 mb-2"></i>
+                    <p class="text-sm text-slate-400">Nog geen acties geconfigureerd.</p>
+                </div>
+
+                <div v-for="(action, idx) in actions" :key="idx" class="relative z-10 pl-8">
+                    <div class="absolute left-0 top-6 w-6 h-6 bg-teal-500 text-white rounded-full flex items-center justify-center text-xs font-bold shadow-sm border-2 border-white dark:border-slate-900">
+                        {{ idx + 1 }}
+                    </div>
+
+                    <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg shadow-md overflow-hidden">
+                        <div class="bg-slate-50 dark:bg-slate-800/50 p-3 border-b border-slate-100 dark:border-slate-700 flex justify-between items-center">
+                            <div class="flex items-center gap-2">
+                                <i :class="getActionIcon(action.type)" class="text-teal-600 dark:text-teal-400 text-lg"></i>
+                                <span class="font-bold text-sm">{{ getActionLabel(action.type) }}</span>
+                            </div>
+                            <button @click="removeAction(idx)" class="text-slate-400 hover:text-red-500"><i class="ph ph-trash"></i></button>
+                        </div>
+                        <div class="p-4 space-y-3 text-sm">
+                            <div v-if="action.type === 'send_email'">
+                                <label class="text-[10px] uppercase font-bold text-slate-400">Template</label>
+                                <select v-model="action.data.templateId" class="w-full p-2 border rounded dark:bg-slate-950 dark:border-slate-600"><option value="1">Welcome</option></select>
+                            </div>
+                            <div v-if="['tag_contact', 'tag_company'].includes(action.type)">
+                                <input type="text" v-model="action.data.tagName" placeholder="Tag Name" class="w-full p-2 border rounded dark:bg-slate-950 dark:border-slate-600">
+                            </div>
+                            <div v-if="!['send_email', 'tag_contact', 'tag_company'].includes(action.type)" class="text-xs text-slate-400 italic">Details voor {{ action.type }}...</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="relative pl-8 pt-4">
+                    <button @click="showActionMenu = !showActionMenu" class="w-full py-3 border-2 border-dashed border-teal-300 dark:border-teal-800 text-teal-600 dark:text-teal-400 font-bold rounded-lg hover:bg-teal-50 dark:hover:bg-teal-900/20 transition flex justify-center items-center gap-2 text-xs uppercase tracking-wide">
+                        <i class="ph ph-plus-circle text-xl"></i> Actie Toevoegen
+                    </button>
+                    <div v-if="showActionMenu" class="absolute bottom-16 left-8 right-0 bg-white dark:bg-slate-800 border shadow-xl rounded-lg z-50 p-2 grid grid-cols-1 gap-1 max-h-80 overflow-y-auto">
+                        <button @click="addAction('send_email')" class="text-left px-3 py-2 hover:bg-teal-50 dark:hover:bg-slate-700 rounded flex items-center gap-2 text-sm"><i class="ph ph-envelope-simple"></i> Email</button>
+                        <button @click="addAction('tag_contact')" class="text-left px-3 py-2 hover:bg-teal-50 dark:hover:bg-slate-700 rounded flex items-center gap-2 text-sm"><i class="ph ph-tag"></i> Tag Contact</button>
+                        <button @click="addAction('create_task')" class="text-left px-3 py-2 hover:bg-teal-50 dark:hover:bg-slate-700 rounded flex items-center gap-2 text-sm"><i class="ph ph-check-square"></i> Task</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="bg-slate-800 text-green-400 text-xs font-mono p-2 border-t border-slate-700 flex justify-between items-center cursor-pointer" @click="showDebug = !showDebug">
+        <span>Debug JSON Payload</span>
+        <span>{{ showDebug ? 'Hide' : 'Show' }}</span>
+    </div>
+    <div v-if="showDebug" class="h-32 bg-black text-green-400 p-4 font-mono text-xs overflow-auto border-t border-slate-700">
+        <pre>{{ JSON.stringify(getPayload(), null, 2) }}</pre>
+    </div>
+
+</div>
+
+<script>
+    const { createApp, ref, computed } = Vue;
+
+    createApp({
+        setup() {
+            // STATE
+            const isDark = ref(false);
+            const isActive = ref(true);
+            const hasSchedule = ref(false);
+            const scheduleStart = ref('');
+            const scheduleEnd = ref('');
+
+            const automationName = ref('');
+            const targetType = ref('contacts');
+            const activeRules = ref([]);
+            const actions = ref([]);
+
+            const showTriggerMenu = ref(false);
+            const showActionMenu = ref(false);
+            const showDebug = ref(false);
+
+            // DATA
+            const ruleDefinitions = [
+                { id: 1, label: 'Stad', category: 'Demografie', inputType: 'multi-text' },
+                { id: 9, label: 'Web Activiteit', category: 'Activiteit', inputType: 'timeframe' },
+                { id: 29, label: 'Order Status Change', category: 'Orders', inputType: 'status-select' },
+            ];
+
+            const groupedRules = computed(() => {
+                const groups = { 'Demografie': [], 'Activiteit': [], 'Orders': [] };
+                if (targetType.value !== 'companies') delete groups['Orders'];
+                ruleDefinitions.forEach(r => { if (groups[r.category]) groups[r.category].push(r); });
+                return groups;
+            });
+
+            const addRule = (def) => { activeRules.value.push({ ...def, uniqueId: Date.now(), value: '', days: 0 }); showTriggerMenu.value = false; };
+            const removeRule = (idx) => activeRules.value.splice(idx, 1);
+
+            const addAction = (type) => {
+                actions.value.push({ type, data: { tagName: '', templateId: '' } });
+                showActionMenu.value = false;
+            };
+            const removeAction = (idx) => actions.value.splice(idx, 1);
+
+            const getActionLabel = (type) => type.replace('_', ' ').toUpperCase();
+            const getActionIcon = (type) => {
+                const icons = { 'send_email': 'ph-envelope-simple', 'tag_contact': 'ph-tag', 'create_task': 'ph-check-square' };
+                return 'ph ' + (icons[type] || 'ph-lightning');
+            };
+
+            const toggleDark = () => { isDark.value = !isDark.value; document.documentElement.classList.toggle('dark', isDark.value); };
+            const handleBack = () => alert("Back");
+            const handleSave = () => alert("Saved!");
+
+            const getPayload = () => ({
+                name: automationName.value,
+                isActive: isActive.value,
+                schedule: hasSchedule.value ? { start: scheduleStart.value, end: scheduleEnd.value } : 'always_on',
+                targetEntity: targetType.value,
+                triggers: activeRules.value,
+                actions: actions.value
+            });
+
+            return {
+                isDark, toggleDark, isActive, hasSchedule, scheduleStart, scheduleEnd,
+                handleBack, handleSave, automationName, targetType, activeRules, groupedRules,
+                actions, addRule, removeRule, addAction, removeAction,
+                showTriggerMenu, showActionMenu, showDebug, getPayload, getActionLabel, getActionIcon
+            };
+        }
+    }).mount('#app');
+</script>
+</body>
+</html>

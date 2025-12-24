@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Onze Partners | Dimix</title>
+    <style>
+        /* --- 1. Base Variables & Reset --- */
+        :root {
+            --dimix-red: #a92525;
+            --dimix-dark: #222;
+            --bg-color: #ffffff; /* Of #f4f7f9 als je de pagina-achtergrond grijs wilt */
+            --card-bg: #ffffff;
+            --border-color: #eaebed;
+            --text-main: #333;
+            --text-light: #555;
+            --radius: 8px; /* De subtiele radius uit je screenshot */
+            --shadow-hover: 0 10px 20px rgba(0,0,0,0.08);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            line-height: 1.6;
+            padding-bottom: 60px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 60px 20px 20px;
+        }
+
+        /* --- 2. Header & Tabs --- */
+        .page-header {
+            text-align: center;
+            margin-bottom: 50px;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .page-header h1 {
+            font-size: 2.5rem;
+            color: var(--dimix-dark);
+            margin-bottom: 15px;
+            font-weight: 800;
+        }
+
+        .page-header p {
+            font-size: 1.1rem;
+            color: var(--text-light);
+        }
+
+        /* Filter Tabs */
+        .tabs {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 50px;
+        }
+
+        .tab-btn {
+            padding: 10px 25px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background-color: #fff;
+            color: var(--text-light);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 0.95rem;
+        }
+
+        .tab-btn:hover {
+            background-color: #f8f9fa;
+            color: var(--dimix-dark);
+            border-color: #ccc;
+        }
+
+        .tab-btn.active {
+            background-color: var(--dimix-red);
+            color: white;
+            border-color: var(--dimix-red);
+        }
+
+        /* --- 3. Grid System --- */
+        .brand-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 25px;
+        }
+
+        /* --- 4. Card Design --- */
+        .brand-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius);
+            padding: 25px;
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start; /* Alles links uitlijnen */
+            text-align: left;
+            height: 100%;
+            position: relative;
+        }
+
+        .brand-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-hover);
+            border-color: #ccc;
+        }
+
+        .brand-card.hidden { display: none; }
+        .brand-card.show { animation: fadeIn 0.5s ease forwards; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Logo Styling */
+        .brand-logo {
+            height: 45px;          /* Iets groter om de titel te vervangen */
+            width: auto;
+            max-width: 100%;
+            object-fit: contain;
+            object-position: left;
+            margin-bottom: 20px;   /* Ruimte tot de tekst */
+        }
+
+        /* Description Styling */
+        .brand-desc {
+            color: var(--text-light);
+            font-size: 0.95rem;
+            line-height: 1.6;
+            margin-bottom: 20px;
+            flex-grow: 1; /* Duwt de link naar beneden zodat ze op gelijke hoogte komen */
+        }
+
+        /* Link Styling (Terug toegevoegd) */
+        .brand-link {
+            text-decoration: none;
+            color: var(--dimix-red);
+            font-weight: 700;
+            font-size: 0.95rem;
+            display: inline-flex;
+            align-items: center;
+            transition: color 0.2s;
+        }
+
+        .brand-link span { margin-left: 6px; transition: margin-left 0.2s; }
+        .brand-link:hover { color: var(--dimix-dark); }
+        .brand-link:hover span { margin-left: 10px; }
+
+    </style>
+</head>
+<body>
+
+<div class="container">
+
+    <header class="page-header">
+        <h1>Onze Partners</h1>
+        <p>Wij bouwen op sterke merken om u de beste print- en signoplossingen te bieden.</p>
+    </header>
+
+    <div class="tabs">
+        <button class="tab-btn active" onclick="filterBrands('all', this)">Alle Partners</button>
+        <button class="tab-btn" onclick="filterBrands('apparatuur', this)">Apparatuur</button>
+        <button class="tab-btn" onclick="filterBrands('rip', this)">RIP & Workflow</button>
+        <button class="tab-btn" onclick="filterBrands('films', this)">Films & Media</button>
+    </div>
+
+    <div class="brand-grid">
+
+        <article class="brand-card" data-category="apparatuur">
+            <img src="https://beta.dimix.com/images/thumbs/0001274_cwt_130.png" alt="CWT" class="brand-logo">
+            <p class="brand-desc">Bespaar tot 80% tijd in uw afwerking. De applicatietafels van CWT elimineren knelpunten en zorgen voor een perfect vlak resultaat zonder luchtbellen.</p>
+            <a href="#" class="brand-link">Bekijk CWT applicatietafels <span>&rarr;</span></a>
+        </article>
+
+        <article class="brand-card" data-category="apparatuur">
+            <img src="https://beta.dimix.com/images/thumbs/0001278_graphtec_130.png" alt="Graphtec" class="brand-logo">
+            <p class="brand-desc">De werkpaarden onder de snijplotters. Graphtec staat garant voor gebruiksgemak en indrukwekkende snijkracht, zelfs bij de meest complexe materialen.</p>
+            <a href="#" class="brand-link">Bekijk Graphtec snijplotters <span>&rarr;</span></a>
+        </article>
+
+        <article class="brand-card" data-category="apparatuur">
+            <img src="https://beta.dimix.com/images/thumbs/0001279_hp_130.png" alt="HP" class="brand-logo">
+            <p class="brand-desc">Innovatie en snelheid staan centraal. Ontdek de de veelzijdige DesignJet serie printers voor CAD, GIS & fotografische applicaties.</p>
+            <a href="#" class="brand-link">Bekijk HP producten <span>&rarr;</span></a>
+        </article>
+
+        <article class="brand-card" data-category="apparatuur">
+            <img src="https://beta.dimix.com/images/thumbs/0001284_mimaki_130.png" alt="Mimaki" class="brand-logo">
+            <p class="brand-desc">Ontdek de innovatie van Mimaki. Van veelzijdige solvent en led-uv grootformaatprinters, led-uv flatbeds, DTF- & sublimatieprinters tot nauwkeurige budgetvriendelijke snijplotters.</p>
+            <a href="#" class="brand-link">Bekijk Mimaki producten <span>&rarr;</span></a>
+        </article>
+
+        <article class="brand-card" data-category="apparatuur">
+            <img src="https://beta.dimix.com/images/thumbs/0001359_press-x-pro_130.png" alt="Press-X Pro" class="brand-logo">
+            <p class="brand-desc">Dimix’s eigen selectie voor de professional. Press-X Pro biedt robuuste hittepersen die uitstekende prestaties combineren met een scherpe prijs.</p>
+            <a href="#" class="brand-link">Bekijk Press-X Pro <span>&rarr;</span></a>
+        </article>
+
+        <article class="brand-card" data-category="apparatuur">
+            <img src="https://beta.dimix.com/images/thumbs/0001288_roland_130.png" alt="Roland DG" class="brand-logo">
+            <p class="brand-desc">Wereldwijd bekend om hun legendarische betrouwbaarheid. Til uw productie naar een hoger niveau met de robuuste grootformaat printers en print-&-cut systemen met ecosolvent of led-uv techniek, alsook de veelzijdige led-uv flatbed & direct to object printers.</p>
+            <a href="#" class="brand-link">Bekijk Roland producten <span>&rarr;</span></a>
+        </article>
+
+        <article class="brand-card" data-category="apparatuur">
+            <img src="https://beta.dimix.com/images/thumbs/0001289_rowe_130.png" alt="Rowe" class="brand-logo">
+            <p class="brand-desc">Duitse degelijkheid voor uw documentstromen. De high-end scanners en vouwmachines van Rowe stroomlijnen en automatiseren uw workflow.</p>
+            <a href="#" class="brand-link">Bekijk Rowe oplossingen <span>&rarr;</span></a>
+        </article>
+
+        <article class="brand-card" data-category="apparatuur">
+            <img src="https://beta.dimix.com/images/thumbs/0001290_stahls-hotronix_130.png" alt="Stahls Hotronix" class="brand-logo">
+            <p class="brand-desc">De onbetwiste marktleider in warmtepers-technologie. Dankzij innovatieve features en gelijkmatige drukverdeling realiseert u de perfecte transfer.</p>
+            <a href="#" class="brand-link">Bekijk Hotronix persen <span>&rarr;</span></a>
+        </article>
+
+        <article class="brand-card" data-category="apparatuur">
+            <img src="https://beta.dimix.com/images/thumbs/0001291_summa_130.png" alt="Summa" class="brand-logo">
+            <p class="brand-desc">Belgische topkwaliteit. Ervaar ongeëvenaarde precisie in zowel contour- als vlakbedsnijden. Summa is dé standaard voor signmakers.</p>
+            <a href="#" class="brand-link">Bekijk Summa producten <span>&rarr;</span></a>
+        </article>
+
+
+        <article class="brand-card" data-category="rip">
+            <img src="https://beta.dimix.com/images/thumbs/0001353_cadlink-digital-factory_130.png" alt="Digital Factory" class="brand-logo">
+            <p class="brand-desc">De absolute standaard voor specialty printing. Of het nu gaat om DTF, UV-printing of graveren: Digital Factory optimaliseert uw bestanden.</p>
+            <a href="#" class="brand-link">Bekijk Digital Factory <span>&rarr;</span></a>
+        </article>
+
+        <article class="brand-card" data-category="rip">
+            <img src="https://beta.dimix.com/images/thumbs/0001286_onyx-graphics_130.png" alt="ONYX Graphics" class="brand-logo">
+            <p class="brand-desc">Haal meer uit uw printer. ONYX biedt krachtige RIP-software en tools voor superieure kleurweergave en voorspelbare productie.</p>
+            <a href="#" class="brand-link">Bekijk ONYX software <span>&rarr;</span></a>
+        </article>
+
+
+        <article class="brand-card" data-category="films">
+            <img src="https://beta.dimix.com/images/thumbs/0001270_arlon_130.png" alt="ARLON" class="brand-logo">
+            <p class="brand-desc">De favoriet van carwrappers. Ervaar het gemak van FLITE Technology® en creëer adembenemende voertuigreclame die lang mooi blijft.</p>
+            <a href="#" class="brand-link">Bekijk ARLON folies<span>&rarr;</span></a>
+        </article>
+
+        <article class="brand-card" data-category="films">
+            <img src="https://beta.dimix.com/images/thumbs/0001271_aslan_130.png" alt="ASLAN" class="brand-logo">
+            <p class="brand-desc">Voor elke uitdaging een folie. ASLAN is dé specialist in niche-oplossingen, van moeilijk hechtende ondergronden tot unieke decoratieve effecten.</p>
+            <a href="#" class="brand-link">Bekijk ASLAN folies <span>&rarr;</span></a>
+        </article>
+
+        <article class="brand-card" data-category="films">
+            <img src="https://beta.dimix.com/images/thumbs/0001273_contra-vision_130.png" alt="Contra Vision" class="brand-logo">
+            <p class="brand-desc">De uitvinder van one-way vision. Transformeer glazen oppervlakken in krachtige reclamedragers zonder het zicht van binnenuit te belemmeren.</p>
+            <a href="#" class="brand-link">Bekijk Contra Vision folies<span>&rarr;</span></a>
+        </article>
+
+        <article class="brand-card" data-category="films">
+            <img src="https://beta.dimix.com/images/thumbs/0001354_d-line_130.png" alt="D-Line" class="brand-logo">
+            <p class="brand-desc">De slimme keuze voor uw dagelijkse productie. Kwalitatieve print- en lamineerfolies geselecteerd door onze experts, voor een scherpe prijs.</p>
+            <a href="#" class="brand-link">Bekijk D-Line print & lamineerfolies <span>&rarr;</span></a>
+        </article>
+
+        <article class="brand-card" data-category="films">
+            <img src="https://beta.dimix.com/images/thumbs/0001277_grafityp_130.png" alt="Grafityp" class="brand-logo">
+            <p class="brand-desc">Van carwraps tot architecturale folies. Grafityp biedt een enorme variëteit aan duurzame, zelfklevende oplossingen van Belgische bodem.</p>
+            <a href="#" class="brand-link">Bekijk Grafityp print & sign folies <span>&rarr;</span></a>
+        </article>
+
+        <article class="brand-card" data-category="films">
+            <img src="https://beta.dimix.com/images/thumbs/0001281_intercoat_130.png" alt="Intercoat" class="brand-logo">
+            <p class="brand-desc">'Made in Germany' kwaliteit met een groen hart. Ontdek de hoogwaardige zelfklevende folies met unieke watergedragen lijmtechnologie.</p>
+            <a href="#" class="brand-link">Bekijk Intercoat print & sign folies<span>&rarr;</span></a>
+        </article>
+
+        <article class="brand-card" data-category="films">
+            <img src="https://placehold.co/300x150/fcfcfc/a92525?text=Kernow+Coatings&font=roboto" alt="Kernow Coatings" class="brand-logo">
+            <p class="brand-desc">De specialist in hoogwaardige synthetische media. Van vlakke roll-up media tot duurzame backlit films voor een stralende presentatie.</p>
+            <a href="#" class="brand-link">Bekijk Kernow Coating synthetische printmedia <span>&rarr;</span></a>
+        </article>
+
+        <article class="brand-card" data-category="films">
+            <img src="https://beta.dimix.com/images/thumbs/0001282_mactac_130.png" alt="Mactac" class="brand-logo">
+            <p class="brand-desc">Laat uw creativiteit de vrije loop. Mactac staat bekend om innovatieve folies voor visuele communicatie, interieurdesign en gevelbekleding.</p>
+            <a href="#" class="brand-link">Bekijk Mactac printfolies & laminaten<span>&rarr;</span></a>
+        </article>
+
+        <article class="brand-card" data-category="films">
+            <img src="https://beta.dimix.com/images/thumbs/0001285_nekoosa_130.png" alt="Nekoosa" class="brand-logo">
+            <p class="brand-desc">Verleg de grenzen van printmedia. Nekoosa biedt unieke oplossingen op basis van speciale polyesterfilms.</p>
+            <a href="#" class="brand-link">Bekijk Nekoosa films<span>&rarr;</span></a>
+        </article>
+
+        <article class="brand-card" data-category="films">
+            <img src="https://beta.dimix.com/images/thumbs/0001287_poli-tape_130.png" alt="Poli-Tape" class="brand-logo">
+            <p class="brand-desc">Breng textiel tot leven met hoogwaardige Poli-Flex flexfolies. Ontdek ook de poli-tape printfolies & lamineerfolies gefabriceerd in Duitsland met de allerbeste grondstoffen.</p>
+            <a href="#" class="brand-link">Bekijk Poli-Tape <span>&rarr;</span></a>
+        </article>
+
+        <article class="brand-card" data-category="films">
+            <img src="https://beta.dimix.com/images/thumbs/0001292_sihl_130.png" alt="Sihl" class="brand-logo">
+            <p class="brand-desc">Geef uw prints de uitstraling die ze verdienen. Sihl biedt premium niet-klevende printmedia voor high-end reclame, interieurdecoratie en artistieke toepassingen.</p>
+            <a href="#" class="brand-link">Bekijk Sihl media <span>&rarr;</span></a>
+        </article>
+
+        <article class="brand-card" data-category="films">
+            <img src="https://beta.dimix.com/images/thumbs/0001293_yupotako_130.png" alt="Yupotako" class="brand-logo">
+            <p class="brand-desc">Plakken zonder lijmresten? Het kan. Yupotako gebruikt microscopische zuignapjes voor een 'foolproof' applicatie en eenvoudige verwijdering.</p>
+            <a href="#" class="brand-link">Bekijk Yupotako <span>&rarr;</span></a>
+        </article>
+
+    </div>
+
+</div>
+
+<script>
+    function filterBrands(category, btn) {
+        let buttons = document.getElementsByClassName('tab-btn');
+        for (let b of buttons) {
+            b.classList.remove('active');
+        }
+        btn.classList.add('active');
+
+        let cards = document.getElementsByClassName('brand-card');
+
+        for (let card of cards) {
+            card.classList.remove('show');
+
+            if (category === 'all') {
+                card.classList.remove('hidden');
+                setTimeout(() => card.classList.add('show'), 10);
+            } else {
+                if (card.getAttribute('data-category') === category) {
+                    card.classList.remove('hidden');
+                    setTimeout(() => card.classList.add('show'), 10);
+                } else {
+                    card.classList.add('hidden');
+                }
+            }
+        }
+    }
+
+    document.addEventListener("DOMContentLoaded", function() {
+        let cards = document.getElementsByClassName('brand-card');
+        for (let card of cards) {
+            card.classList.add('show');
+        }
+    });
+</script>
+
+</body>
+</html>
